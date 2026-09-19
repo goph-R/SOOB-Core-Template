@@ -1,4 +1,4 @@
-# SOOB-Template
+# SOOB-Core-Template
 
 A clone-and-rename starter for a 2D [SOOB-Core](https://github.com/goph-R/SOOB-Core)
 game. Targets everything from Windows 98 (Pentium-class, SDL 1.2,
@@ -15,9 +15,9 @@ Clone the shared engine as a sibling — the build scripts resolve `../SOOB-Core
 
 ```
 Games/
-├── SOOB-Template/       ← this repo (rename the folder)
-├── SOOB-Core/           ← clone alongside
-└── SOOB-Core-Android/   ← only if you ship an APK
+├── SOOB-Core-Template/   ← this repo (rename the folder)
+├── SOOB-Core/            ← clone alongside
+└── SOOB-Core-Android/    ← only if you ship an APK
 ```
 
 ```sh
