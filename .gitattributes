@@ -17,4 +17,5 @@
 *.dll      binary
 *.exe      binary
 *.fbx      binary
+*.jar      binary
 *.zip      binary

@@ -7,7 +7,8 @@ Guidance for Claude Code when working in this repository.
 A starter for a 2D SOOB-Core game. The engine — the C host, the build
 fragments, the Lua engine modules — lives in `../SOOB-Core`. This repo holds
 only per-game files: `app.lua`, `config.lua`, `assets.lua`, `scripts/`,
-`assets/`, and three-line build files.
+`assets/`, and three-line build files. The Android player lives in
+`../SOOB-Core-Android`; `android/` here is only the APK's identity.
 
 **Read `../SOOB-Core/CLAUDE.md` first** — it owns the coding conventions, and
 `../SOOB-Core/SOOB-Lua.md` is the binding reference.
@@ -26,6 +27,15 @@ only per-game files: `app.lua`, `config.lua`, `assets.lua`, `scripts/`,
   `set NAME=`.
 - `scripts/engine/` is **generated** — copied from SOOB-Core on every build and
   gitignored. Never edit it here; fix the source in SOOB-Core.
+- `android/` is an APK wrapper, not a port. It has **no Kotlin and no C**: the
+  host, the JNI bridge and Lua all come from `../SOOB-Core-Android` through the
+  `includeBuild` in `android/settings.gradle`. The build logic lives in that
+  repo's `gradle/soobApp.gradle` and `gradle/syncGame.gradle` — change the
+  shared fragment, not the stub, exactly as with `Makefile` and `CMakeLists.txt`.
+  The one per-game line is `def appId` in `android/app/build.gradle`; everything
+  else a game sets (label, colour, orientation, save file) comes from `app.lua`.
+- `android/app/src/main/assets/` is **generated** by the `syncGame` task —
+  the bundle plus SOOB-Core's `scripts/engine` — and gitignored. Never edit it.
 
 ## Build and verify
 
@@ -48,6 +58,19 @@ line, then the `assets: N sound(s), ...` summary. A Lua traceback after
 This confirms syntax, `require` resolution and asset registration — which
 covers most refactor regressions. It cannot check colours, layout or animation
 timing; those need the dev box.
+
+For the Android wrapper, a configuration-only check catches most breakage
+without a device or an NDK compile:
+
+```sh
+cd android && ./gradlew :app:tasks     # resolves the composite build
+```
+
+A full `:app:assembleDebug` needs SDK 36 + NDK 29. The C half can also be
+booted against this bundle without a phone, from
+`../SOOB-Core-Android/tools/hosttest`: `./host_test.exe ../../../<this repo>`.
+It reports `FAIL textures/regions/fonts/sounds registered` for an assetless
+bundle — that is the harness expecting Find5's content, not a fault here.
 
 ## Constraints
 
